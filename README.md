@@ -1,0 +1,1 @@
+This is an activities registration form built using ReactJS.  The purpose is to practice creating components, the state, updating the state and handling events in React.
