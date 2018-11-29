@@ -1,5 +1,7 @@
 let activitySelection = ["Science Lab","Swimming","Cooking","Painting"],
-    restrictions = ['Dietary Restrictions', 'Physical Disabilities', 'Medical Needs']
+    restrictions = ['a) Dietary Restrictions',
+                    'b) Physical Disabilities',
+                    'c) Medical Needs']
 
 function InputField(props) {
   return (
@@ -38,12 +40,35 @@ function Restrictions(props) {
   )
 }
 
+function  Button(props) {
+  return (
+    <button>{props.value}</button>
+  )
+}
+
+class Register extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {firstName: '',
+                  lastName: '',
+                  activity: '',
+                  restrictions: ''}
+  }
+
+  render() {
+    return (
+      <div>
+        <InputField label = 'First Name'/>
+        <InputField label = 'Last Name'/>
+        <SelectActivity label = 'Select Activity' list = {activitySelection}/>
+        <Restrictions list = {restrictions}/>
+        <Button value = 'Submit'/>
+      </div>
+    )
+  }
+}
+
 ReactDOM.render(
-  <div>
-    <InputField label = 'First Name'/>
-    <InputField label = 'Last Name'/>
-    <SelectActivity label = 'Select Activity' list = {activitySelection}/>
-    <Restrictions list = {restrictions}/>
-  </div>,
+  <Register/>,
   document.getElementById('root')
 )
