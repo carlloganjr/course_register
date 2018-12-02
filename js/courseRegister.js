@@ -7,7 +7,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var activitySelection = ["Science Lab", "Swimming", "Cooking", "Painting"],
-    restrictions = ['a) Dietary Restrictions', 'b) Physical Disabilities', 'c) Medical Needs'];
+    restrictions = ['a) Dietary Restrictions', 'b) Physical Disabilities', 'c) Medical Needs'],
+    _registeredStudent = [];
 
 function InputField(props) {
   return React.createElement(
@@ -18,7 +19,8 @@ function InputField(props) {
       { "class": "label" },
       props.label
     ),
-    React.createElement("input", { value: props.value, "class": "input", type: "text" })
+    React.createElement("input", { value: props.value, "class": "input",
+      type: "text", onChange: props.handler })
   );
 }
 
@@ -40,7 +42,7 @@ function SelectActivity(props) {
     ),
     React.createElement(
       "select",
-      null,
+      { onChange: props.handler },
       options
     )
   );
@@ -51,7 +53,9 @@ function Restrictions(props) {
     return React.createElement(
       "div",
       null,
-      React.createElement("input", { type: "checkbox", key: item, id: item }),
+      React.createElement("input", { type: "checkbox", key: item,
+        id: item, onChange: props.handler,
+        value: item }),
       React.createElement(
         "label",
         { "for": item },
@@ -69,8 +73,84 @@ function Restrictions(props) {
 function Button(props) {
   return React.createElement(
     "button",
-    null,
+    { value: props.value, onClick: props.handler },
     props.value
+  );
+}
+
+function StudentInfo(props) {
+  return React.createElement(
+    "tr",
+    null,
+    React.createElement(
+      "td",
+      null,
+      React.createElement(Button, { value: "X", handler: props.handler })
+    ),
+    React.createElement(
+      "td",
+      null,
+      props.firstName
+    ),
+    React.createElement(
+      "td",
+      null,
+      props.lastName
+    ),
+    React.createElement(
+      "td",
+      null,
+      props.activity
+    ),
+    React.createElement(
+      "td",
+      null,
+      props.restriction
+    )
+  );
+}
+
+function Registrations(props) {
+  var registered = props.list.map(function (item, i) {
+    return React.createElement(StudentInfo, { key: i,
+      firstName: item.firstName,
+      lastName: item.lastName,
+      activity: item.activity,
+      restriction: item.restriction });
+  });
+  return React.createElement(
+    "table",
+    { "class": "student" },
+    React.createElement(
+      "tr",
+      null,
+      React.createElement(
+        "th",
+        null,
+        "Remove"
+      ),
+      React.createElement(
+        "th",
+        null,
+        "First Name"
+      ),
+      React.createElement(
+        "th",
+        null,
+        "Last Name"
+      ),
+      React.createElement(
+        "th",
+        null,
+        "Activity"
+      ),
+      React.createElement(
+        "th",
+        null,
+        "Restrictions"
+      )
+    ),
+    registered
   );
 }
 
@@ -85,21 +165,58 @@ var Register = function (_React$Component) {
     _this.state = { firstName: '',
       lastName: '',
       activity: '',
-      restrictions: '' };
+      restriction: '',
+      students: [] };
+    _this.registeredStudent = _this.registeredStudent.bind(_this);
     return _this;
   }
 
   _createClass(Register, [{
+    key: "updateFirst",
+    value: function updateFirst(e) {
+      this.setState({ firstName: e.target.value });
+    }
+  }, {
+    key: "updateLast",
+    value: function updateLast(e) {
+      this.setState({ lastName: e.target.value });
+    }
+  }, {
+    key: "updateActivity",
+    value: function updateActivity(e) {
+      this.setState({ activity: e.target.value });
+    }
+  }, {
+    key: "updateRestriction",
+    value: function updateRestriction(e) {
+      this.setState({ restriction: e.target.value });
+    }
+  }, {
+    key: "registeredStudent",
+    value: function registeredStudent() {
+      _registeredStudent.push({ firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        activity: this.state.activity,
+        restriction: this.state.restriction
+      });
+      this.setState({ students: _registeredStudent });
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
         null,
-        React.createElement(InputField, { label: "First Name" }),
-        React.createElement(InputField, { label: "Last Name" }),
-        React.createElement(SelectActivity, { label: "Select Activity", list: activitySelection }),
-        React.createElement(Restrictions, { list: restrictions }),
-        React.createElement(Button, { value: "Submit" })
+        React.createElement(InputField, { label: "First Name", value: this.state.firstName,
+          handler: this.updateFirst.bind(this) }),
+        React.createElement(InputField, { label: "Last Name", value: this.state.lastName,
+          handler: this.updateLast.bind(this) }),
+        React.createElement(SelectActivity, { label: "Select Activity", list: activitySelection,
+          handler: this.updateActivity.bind(this) }),
+        React.createElement(Restrictions, { list: restrictions,
+          handler: this.updateRestriction.bind(this) }),
+        React.createElement(Button, { value: "Submit", handler: this.registeredStudent }),
+        React.createElement(Registrations, { list: this.state.students })
       );
     }
   }]);

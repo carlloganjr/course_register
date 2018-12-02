@@ -4,3 +4,13 @@
   width: 200px;
   margin: 1em 0;
 }
+
+.student {
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+button[value='Submit'] {
+margin-top: 1em;
+}
