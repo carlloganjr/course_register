@@ -1,7 +1,11 @@
-let activitySelection = ["Science Lab","Swimming","Cooking","Painting"],
-    restrictions = ['a) Dietary Restrictions',
-                    'b) Physical Disabilities',
-                    'c) Medical Needs'],
+let activitySelection = ["--Select an activity--",
+                         "Science Lab",
+                         "Swimming",
+                         "Cooking",
+                         "Painting"],
+    restrictions = [{restrict: 'a) Dietary Restrictions', letter: 'a'},
+                    {restrict: 'b) Physical Disabilities', letter: 'b'},
+                    {restrict: 'c) Medical Needs', letter: 'c'}],
     registeredStudent = []
 
 function InputField(props) {
@@ -29,11 +33,13 @@ function SelectActivity(props) {
 function Restrictions(props) {
   let checks = props.list.map((item) => {
     return (
-      <div>
-        <input type = 'checkbox' key = {item}
-               id = {item} onChange = {props.handler}
-               value = {item}/>
-        <label for = {item}>{item}</label>
+      <div key = {item.letter}>
+        <input
+               type = 'checkbox'
+               id = {item.letter}
+               onChange = {props.handler}
+               value = {item.letter}/>
+        <label for = {item.letter}>{item.restrict}</label>
       </div>
     )
   })
@@ -71,7 +77,8 @@ function Registrations(props) {
                    firstName = {item.firstName}
                    lastName = {item.lastName}
                    activity = {item.activity}
-                   restriction = {item.restriction}/>)
+                   restriction = {item.restriction}
+                   handler = {props.handler}/>)
     }
   )
   return (
@@ -112,7 +119,17 @@ class Register extends React.Component {
   }
 
   updateRestriction(e) {
-    this.setState({restriction: e.target.value})
+    let index = this.state.restriction.indexOf(e.target.value)
+    if (e.target.checked == true) {
+      this.state.restriction += e.target.value
+      // this.setState({str: this.state.str)
+    }
+    else if (e.target.checked == false) {
+      // this.state.restriction.replace(e.target.value, '')
+      // this.state.restriction.trim()
+      this.setState({restriction:this.state.restriction.replace(e.target.value, '')})
+    }
+    // alert(this.state.restriction)
   }
 
   registeredStudent() {
@@ -121,6 +138,11 @@ class Register extends React.Component {
                             activity: this.state.activity,
                             restriction: this.state.restriction
                             })
+    this.setState({students: registeredStudent})
+  }
+
+  removeItem(i) {
+    registeredStudent.splice(i,1)
     this.setState({students: registeredStudent})
   }
 
@@ -136,7 +158,8 @@ class Register extends React.Component {
         <Restrictions list = {restrictions}
                       handler = {this.updateRestriction.bind(this)}/>
         <Button value = 'Submit'handler = {this.registeredStudent}/>
-        <Registrations list = {this.state.students}/>
+        <Registrations list = {this.state.students}
+                       handler = {this.removeItem.bind(this)}/>
       </div>
     )
   }
